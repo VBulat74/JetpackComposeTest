@@ -5,6 +5,7 @@ import android.os.Parcelable
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.parcelize.Parcelize
@@ -36,7 +38,7 @@ class MainActivity : ComponentActivity() {
             var counterState by rememberSaveable {
                 mutableStateOf(CounterState())
             }
-            StatelesCounter(
+            StatelessCounter(
                 counterState.number,
                 onIncrement = { incrementedValue ->
                     counterState = counterState.copy(number = incrementedValue)
@@ -47,15 +49,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun StatelesCounter(
+private fun StatelessCounter(
     counterValue : Int = 0,
     onIncrement : (incrementedValue : Int) -> Unit
 ) {
-
-//    var counterState by rememberSaveable {
-//        mutableStateOf(CounterState())
-//    }
-
+    LogCompositionLifeCycle(name = "StatelessCounter")
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -78,6 +76,21 @@ private fun StatelesCounter(
                 fontSize = 18.sp
             )
         }
+        Box(modifier = Modifier.height(100.dp)){
+            if (counterValue % 2 == 0){
+                LogCompositionLifeCycle(name = "IsEvenText")
+                Text(
+                    text = "Is Even = true",
+                    fontSize = 18.sp
+                )
+            }
+        }
 
     }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun PreviewScreen(){
+    StatelessCounter(onIncrement = { }, counterValue = 0)
 }
